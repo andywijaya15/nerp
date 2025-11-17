@@ -4,15 +4,12 @@ namespace App\Filament\Clusters\MasterData\Resources;
 
 use App\Filament\Clusters\MasterData;
 use App\Filament\Clusters\MasterData\Resources\ProductResource\Pages;
-use App\Filament\Clusters\MasterData\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ProductResource extends Resource
 {
@@ -45,7 +42,7 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                 Tables\Columns\TextColumn::make('code')
+                Tables\Columns\TextColumn::make('code')
                     ->searchable()
                     ->sortable(),
 
