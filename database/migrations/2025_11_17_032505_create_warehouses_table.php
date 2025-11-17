@@ -19,8 +19,10 @@ return new class extends Migration
             $table->foreignIdFor(User::class, 'created_by')->constrained();
             $table->foreignIdFor(User::class, 'updated_by')->constrained();
             $table->foreignIdFor(User::class, 'deleted_by')->nullable()->constrained();
+            $table->boolean('is_active')->default(true);
             $table->string('code')->unique();
             $table->string('name');
+            $table->string('address')->nullable();
         });
     }
 

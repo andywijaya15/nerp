@@ -3,17 +3,20 @@
 namespace App\Filament\Clusters\MasterData\Resources;
 
 use App\Filament\Clusters\MasterData;
-use App\Filament\Clusters\MasterData\Resources\ProductResource\Pages;
-use App\Models\Product;
+use App\Filament\Clusters\MasterData\Resources\UomResource\Pages;
+use App\Filament\Clusters\MasterData\Resources\UomResource\RelationManagers;
+use App\Models\Uom;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ProductResource extends Resource
+class UomResource extends Resource
 {
-    protected static ?string $model = Product::class;
+    protected static ?string $model = Uom::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -24,24 +27,32 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('code')
-                    ->label('Product Code')
+                    ->label('Code')
                     ->required()
-                    ->maxLength(50)
-                    ->unique(ignoreRecord: true)
-                    ->columnSpan(2),
+                    ->unique(Uom::class)
+                    ->maxLength(10)
+                    ->columnSpan(1),
 
                 Forms\Components\TextInput::make('name')
-                    ->label('Product Name')
+                    ->label('Name')
                     ->required()
-                    ->maxLength(255)
+                    ->maxLength(100)
                     ->columnSpan(2),
 
-                Forms\Components\Select::make('uom_id')
-                    ->label('UOM')
-                    ->relationship('uom', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
+                Forms\Components\Select::make('precision')
+                    ->label('Decimal Precision')
+                    ->options([
+                        0 => '0 (No decimals)',
+                        1 => '1 digit',
+                        2 => '2 digits',
+                        3 => '3 digits',
+                        4 => '4 digits',
+                        5 => '5 digits',
+                        6 => '6 digits',
+                    ])
+                    ->default(0)
+                    ->required()
+                    ->columnSpan(1),
 
                 Forms\Components\Toggle::make('is_active')
                     ->label('Active')
@@ -55,15 +66,17 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')
+                    ->label('Code')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Name')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('stock')
-                    ->numeric(decimalPlaces: 2)
+                Tables\Columns\TextColumn::make('precision')
+                    ->label('Precision')
                     ->sortable(),
 
                 Tables\Columns\IconColumn::make('is_active')
@@ -102,9 +115,9 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'index' => Pages\ListUoms::route('/'),
+            'create' => Pages\CreateUom::route('/create'),
+            'edit' => Pages\EditUom::route('/{record}/edit'),
         ];
     }
 }

@@ -3,17 +3,20 @@
 namespace App\Filament\Clusters\MasterData\Resources;
 
 use App\Filament\Clusters\MasterData;
-use App\Filament\Clusters\MasterData\Resources\ProductResource\Pages;
-use App\Models\Product;
+use App\Filament\Clusters\MasterData\Resources\WarehouseResource\Pages;
+use App\Filament\Clusters\MasterData\Resources\WarehouseResource\RelationManagers;
+use App\Models\Warehouse;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ProductResource extends Resource
+class WarehouseResource extends Resource
 {
-    protected static ?string $model = Product::class;
+    protected static ?string $model = Warehouse::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -24,29 +27,20 @@ class ProductResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('code')
-                    ->label('Product Code')
+                    ->label('Code')
                     ->required()
-                    ->maxLength(50)
                     ->unique(ignoreRecord: true)
-                    ->columnSpan(2),
+                    ->maxLength(50),
 
                 Forms\Components\TextInput::make('name')
-                    ->label('Product Name')
+                    ->label('Name')
                     ->required()
-                    ->maxLength(255)
-                    ->columnSpan(2),
+                    ->maxLength(150),
 
-                Forms\Components\Select::make('uom_id')
-                    ->label('UOM')
-                    ->relationship('uom', 'name')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-
-                Forms\Components\Toggle::make('is_active')
-                    ->label('Active')
-                    ->default(true)
-                    ->columnSpan(1),
+                Forms\Components\TextInput::make('address')
+                    ->label('Address')
+                    ->required()
+                    ->maxLength(150),
             ]);
     }
 
@@ -55,16 +49,17 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')
+                    ->label('Code')
                     ->searchable()
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable()
-                    ->sortable(),
+                    ->label('Name')
+                    ->searchable(),
 
-                Tables\Columns\TextColumn::make('stock')
-                    ->numeric(decimalPlaces: 2)
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('address')
+                    ->label('Address')
+                    ->searchable(),
 
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
@@ -77,8 +72,7 @@ class ProductResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_active')
-                    ->label('Active'),
+                //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -102,9 +96,9 @@ class ProductResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProducts::route('/'),
-            'create' => Pages\CreateProduct::route('/create'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
+            'index' => Pages\ListWarehouses::route('/'),
+            'create' => Pages\CreateWarehouse::route('/create'),
+            'edit' => Pages\EditWarehouse::route('/{record}/edit'),
         ];
     }
 }

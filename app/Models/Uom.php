@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use App\Traits\HasAudit;
-use Illuminate\Database\Eloquent\Concerns\HasVersion7Uuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Concerns\HasVersion7Uuids;
 
-class Product extends Model
+class Uom extends Model
 {
     use HasAudit, HasVersion7Uuids, SoftDeletes;
 
-    public function uom()
+    public function products()
     {
-        return $this->belongsTo(Uom::class);
+        return $this->hasMany(Product::class);
     }
 }

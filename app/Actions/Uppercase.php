@@ -18,6 +18,9 @@ class Uppercase
                 str_ends_with($lowerKey, '_id') ||
                 $lowerKey === 'password' ||
                 $lowerKey === 'email' ||
+                $lowerKey === 'created_by' ||
+                $lowerKey === 'updated_by' ||
+                $lowerKey === 'deleted_by' ||
                 $lowerKey === 'remember_token'
             ) {
                 continue;
