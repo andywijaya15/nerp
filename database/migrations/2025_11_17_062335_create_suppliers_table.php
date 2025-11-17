@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
+            $table->string('type');
+            $table->string('npwp')->nullable();
+            $table->string('contact_person')->nullable();
         });
     }
 

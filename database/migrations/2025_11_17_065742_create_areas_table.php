@@ -1,11 +1,10 @@
 <?php
 
-use App\Models\ProductCategory;
-use App\Models\Uom;
 use App\Models\User;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Warehouse;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -14,19 +13,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('areas', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->timestamps();
             $table->softDeletes();
             $table->foreignIdFor(User::class, 'created_by')->constrained();
             $table->foreignIdFor(User::class, 'updated_by')->constrained();
             $table->foreignIdFor(User::class, 'deleted_by')->nullable()->constrained();
+            $table->foreignIdFor(Warehouse::class)->constrained();
             $table->boolean('is_active')->default(true);
-            $table->string('code')->unique();
+            $table->string('code');
             $table->string('name');
-            $table->foreignIdFor(ProductCategory::class)->constrained();
-            $table->foreignIdFor(Uom::class)->constrained();
-            $table->string('type');
+            $table->unique(['warehouse_id', 'code']);
         });
     }
 
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('areas');
     }
 };

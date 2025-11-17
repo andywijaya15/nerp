@@ -26,7 +26,7 @@ class SupplierResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('General')
+                Forms\Components\Section::make('Supplier Information')
                     ->schema([
                         Forms\Components\TextInput::make('code')
                             ->required()
@@ -35,10 +35,21 @@ class SupplierResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->required(),
 
+                        Forms\Components\Select::make('type')
+                            ->options(\App\Enums\SupplierType::options())
+                            ->default(\App\Enums\SupplierType::LOCAL->value)
+                            ->required(),
+
                         Forms\Components\Textarea::make('address'),
 
                         Forms\Components\TextInput::make('phone'),
                         Forms\Components\TextInput::make('email')->email(),
+
+                        Forms\Components\TextInput::make('contact_person')
+                            ->label('Contact Person'),
+
+                        Forms\Components\TextInput::make('npwp')
+                            ->label('NPWP'),
 
                         Forms\Components\Toggle::make('is_active')
                             ->default(true)
@@ -55,6 +66,10 @@ class SupplierResource extends Resource
                 Tables\Columns\TextColumn::make('code')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
 
+                Tables\Columns\TextColumn::make('type')
+                    ->formatStateUsing(fn($state) => \App\Enums\SupplierType::from($state)->label())
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('phone'),
                 Tables\Columns\TextColumn::make('email'),
 
@@ -64,7 +79,9 @@ class SupplierResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('type')
+                    ->options(\App\Enums\SupplierType::options()),
+                Tables\Filters\TernaryFilter::make('is_active'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

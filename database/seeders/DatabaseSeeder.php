@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\ProductType;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\Uom;
 use App\Models\User;
 use App\Models\Warehouse;
@@ -29,6 +30,12 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]);
 
+        ProductCategory::query()
+            ->create([
+                'code' => Str::uuid7(),
+                'name' => 'category 1',
+            ]);
+
         Uom::query()
             ->create([
                 'code' => Str::uuid7(),
@@ -40,6 +47,9 @@ class DatabaseSeeder extends Seeder
                 'code' => Str::uuid7(),
                 'name' => 'barang 1',
                 'uom_id' => Uom::query()
+                    ->first()
+                    ->id,
+                'product_category_id' => ProductCategory::query()
                     ->first()
                     ->id,
                 'type' => ProductType::RAW
