@@ -3,7 +3,6 @@
 namespace App\Filament\Clusters\Receiving\Resources\GoodsReceiptResource\Pages;
 
 use App\Filament\Clusters\Receiving\Resources\GoodsReceiptResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateGoodsReceipt extends CreateRecord

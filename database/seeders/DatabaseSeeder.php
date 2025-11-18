@@ -90,7 +90,7 @@ class DatabaseSeeder extends Seeder
             ->create([
                 'code' => GenerateCode::execute('C-'),
                 'name' => 'CUSTOMER 1',
-                'type' => CustomerType::REGULAR
+                'type' => CustomerType::REGULAR,
             ]);
 
         $purchaseOrder = PurchaseOrder::query()
@@ -105,7 +105,7 @@ class DatabaseSeeder extends Seeder
                 'purchase_order_id' => $purchaseOrder->id,
                 'product_id' => $product->id,
                 'qty' => 10,
-                'price' => 1000
+                'price' => 1000,
             ]);
 
         $purchaseOrder->status = PurchaseOrderStatus::CONFIRMED;

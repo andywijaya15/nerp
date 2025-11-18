@@ -25,6 +25,7 @@ class AppPanelProvider extends PanelProvider
     {
         return $panel
             ->id('app')
+            ->brandName('NERP')
             ->path('')
             ->login(Login::class)
             ->colors([
