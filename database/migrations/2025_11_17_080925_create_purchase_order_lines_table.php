@@ -19,9 +19,10 @@ return new class extends Migration
             $table->softDeletes();
             $table->foreignIdFor(PurchaseOrder::class)->constrained();
             $table->foreignIdFor(Product::class)->constrained();
-            $table->decimal('qty', 15, 2);
+            $table->decimal('qty_ordered', 15, 2);
+            $table->decimal('qty_received', 15, 2)->default(0);
             $table->decimal('price', 15, 2)->default(0);
-            $table->decimal('subtotal', 15, 2)->virtualAs('qty * price');
+            $table->decimal('subtotal', 15, 2)->virtualAs('qty_ordered * price');
         });
     }
 

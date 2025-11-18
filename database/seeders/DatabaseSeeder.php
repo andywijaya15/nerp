@@ -104,7 +104,7 @@ class DatabaseSeeder extends Seeder
             ->create([
                 'purchase_order_id' => $purchaseOrder->id,
                 'product_id' => $product->id,
-                'qty' => 10,
+                'qty_ordered' => 10,
                 'price' => 1000,
             ]);
 

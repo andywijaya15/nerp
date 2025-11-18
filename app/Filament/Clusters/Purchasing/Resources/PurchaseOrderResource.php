@@ -27,62 +27,82 @@ class PurchaseOrderResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('supplier_id')
-                    ->label('Supplier')
-                    ->required()
-                    ->options(Supplier::query()->pluck('name', 'id')),
-
-                Forms\Components\DatePicker::make('order_date')
-                    ->label('Order Date')
-                    ->required(),
-
-                Forms\Components\DatePicker::make('delivery_date')
-                    ->label('Delivery Date'),
-
-                Forms\Components\Select::make('status')
-                    ->label('Status')
-                    ->options(PurchaseOrderStatus::options())
-                    ->default(PurchaseOrderStatus::DRAFT->value)
-                    ->disabled(fn ($record) => $record !== null),
-
-                Forms\Components\Textarea::make('notes')
-                    ->label('Notes')
-                    ->rows(3),
-
-                Forms\Components\Repeater::make('lines')
-                    ->relationship()
+                Forms\Components\Section::make('Purchase Order Header')
                     ->schema([
-                        Forms\Components\Select::make('product_id')
-                            ->label('Product')
-                            ->options(Product::query()->pluck('name', 'id'))
-                            ->required(),
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                Forms\Components\Select::make('supplier_id')
+                                    ->label('Supplier')
+                                    ->required()
+                                    ->options(Supplier::query()->pluck('name', 'id')),
 
-                        Forms\Components\TextInput::make('qty')
-                            ->label('Qty')
-                            ->numeric()
-                            ->reactive()
-                            ->required(),
+                                Forms\Components\DatePicker::make('order_date')
+                                    ->label('Order Date')
+                                    ->required(),
 
-                        Forms\Components\TextInput::make('price')
-                            ->label('Price')
-                            ->numeric()
-                            ->reactive()
-                            ->required(),
+                                Forms\Components\DatePicker::make('delivery_date')
+                                    ->label('Delivery Date'),
 
-                        Forms\Components\TextInput::make('subtotal')
-                            ->label('Subtotal')
-                            ->disabled()
-                            ->dehydrated(false)
-                            ->reactive()
-                            ->afterStateUpdated(function ($state, $get, $set) {
-                                $qty = $get('qty') ?? 0;
-                                $price = $get('price') ?? 0;
-                                $set('subtotal', $qty * $price);
-                            }),
+                                Forms\Components\Select::make('status')
+                                    ->label('Status')
+                                    ->options(PurchaseOrderStatus::options())
+                                    ->default(PurchaseOrderStatus::DRAFT->value)
+                                    ->disabled(fn ($record) => $record !== null),
+
+                            ]),
+                        Forms\Components\Textarea::make('notes')
+                            ->label('Notes')
+                            ->rows(3),
+                    ]),
+
+                Forms\Components\Section::make('Purchase Order Lines')
+                    ->schema([
+                        Forms\Components\Repeater::make('lines')
+                            ->relationship()
+                            ->schema([
+                                Forms\Components\Select::make('product_id')
+                                    ->label('Product')
+                                    ->options(Product::query()->pluck('name', 'id'))
+                                    ->required(),
+
+                                Forms\Components\TextInput::make('qty_ordered')
+                                    ->label('Qty')
+                                    ->numeric()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, $get, $set) {
+                                        $qty = $get('qty_ordered') ?? 0;
+                                        $price = $get('price') ?? 0;
+                                        $set('subtotal', $qty * $price);
+                                    })
+                                    ->required(),
+
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Price')
+                                    ->numeric()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, $get, $set) {
+                                        $qty = $get('qty_ordered') ?? 0;
+                                        $price = $get('price') ?? 0;
+                                        $set('subtotal', $qty * $price);
+                                    })
+                                    ->required(),
+
+                                Forms\Components\TextInput::make('subtotal')
+                                    ->label('Subtotal')
+                                    ->disabled()
+                                    ->dehydrated(false)
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, $get, $set) {
+                                        $qty = $get('qty_ordered') ?? 0;
+                                        $price = $get('price') ?? 0;
+                                        $set('subtotal', $qty * $price);
+                                    })
+                                    ->default(fn ($get) => (($get('qty_ordered') ?? 0) * ($get('price') ?? 0))),
+                            ])
+                            ->columns(4)
+                            ->defaultItems(1),
                     ])
-                    ->columns(4)
-                    ->collapsible()
-                    ->defaultItems(1),
+                    ->columnSpan('full'),
             ]);
     }
 
@@ -135,8 +155,8 @@ class PurchaseOrderResource extends Resource
     {
         return [
             'index' => Pages\ListPurchaseOrders::route('/'),
-            // 'create' => Pages\CreatePurchaseOrder::route('/create'),
-            // 'edit' => Pages\EditPurchaseOrder::route('/{record}/edit'),
+            'create' => Pages\CreatePurchaseOrder::route('/create'),
+            'edit' => Pages\EditPurchaseOrder::route('/{record}/edit'),
         ];
     }
 }

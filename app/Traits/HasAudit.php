@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Actions\Uppercase;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 
 trait HasAudit
