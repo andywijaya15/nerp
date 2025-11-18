@@ -28,8 +28,9 @@ class LocatorResource extends Resource
                 Forms\Components\Select::make('warehouse_id')
                     ->label('Warehouse')
                     ->options(Warehouse::query()->where('is_active', true)->pluck('name', 'id'))
-                    ->required()
-                    ->reactive(),
+                    ->dehydrated(false)
+                    ->reactive()
+                    ->afterStateUpdated(fn ($state, callable $set) => $set('area_id', null)),
                 Forms\Components\Select::make('area_id')
                     ->label('Area')
                     ->required()
@@ -51,6 +52,7 @@ class LocatorResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('area.warehouse.name')->label('Warehouse'),
                 Tables\Columns\TextColumn::make('area.name')->label('Area'),
                 Tables\Columns\TextColumn::make('code'),
                 Tables\Columns\TextColumn::make('name'),

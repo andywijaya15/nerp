@@ -2,16 +2,18 @@
 
 namespace Database\Seeders;
 
+use App\Actions\GenerateCode;
 use App\Enums\ProductType;
+use App\Enums\SupplierType;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\Supplier;
 use App\Models\Uom;
 use App\Models\User;
 use App\Models\Warehouse;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,35 +32,38 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]);
 
-        ProductCategory::query()
+        $pc = ProductCategory::query()
             ->create([
-                'code' => Str::uuid7(),
-                'name' => 'category 1',
+                'code' => GenerateCode::execute('PC-'),
+                'name' => 'KATEGORI 1',
             ]);
 
-        Uom::query()
+        $uom = Uom::query()
             ->create([
-                'code' => Str::uuid7(),
+                'code' => GenerateCode::execute('UOM-'),
                 'name' => 'uom 1',
             ]);
 
         Product::query()
             ->create([
-                'code' => Str::uuid7(),
-                'name' => 'barang 1',
-                'uom_id' => Uom::query()
-                    ->first()
-                    ->id,
-                'product_category_id' => ProductCategory::query()
-                    ->first()
-                    ->id,
+                'code' => GenerateCode::execute('PRD-'),
+                'name' => 'BARANG 1',
+                'uom_id' => $uom->id,
+                'product_category_id' => $pc->id,
                 'type' => ProductType::RAW,
+            ]);
+
+        Supplier::query()
+            ->create([
+                'code' => GenerateCode::execute('SUP-'),
+                'name' => 'SUPPLIER 1',
+                'type' => SupplierType::LOCAL,
             ]);
 
         Warehouse::query()
             ->create([
-                'code' => Str::uuid7(),
-                'name' => 'warehouse 1',
+                'code' => GenerateCode::execute('WH-'),
+                'name' => 'WAREHOUSE 1',
             ]);
     }
 }
